@@ -1,0 +1,26 @@
+<ehcache name="demo-bank-cache" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         updateCheck="false"
+         xsi:noNamespaceSchemaLocation="http://www.ehcache.org/ehcache.xsd">
+    <defaultCache
+            maxElementsInMemory="50000"
+            eternal="false"
+            timeToIdleSeconds="3600"
+            timeToLiveSeconds="0"
+            memoryStoreEvictionPolicy="LRU"
+            />
+
+    <cache
+            name="org.hibernate.cache.StandardQueryCache"
+            maxElementsInMemory="20000"
+            eternal="false"
+            timeToIdleSeconds="1200"
+            timeToLiveSeconds="0"
+            memoryStoreEvictionPolicy="LRU"
+            />
+
+    <cache
+            name="org.hibernate.cache.UpdateTimestampsCache"
+            maxElementsInMemory="20000"
+            eternal="true"
+            />
+</ehcache>
