@@ -1,9 +1,12 @@
-# training-server
+# Backbase Training Exercises
 
-Camel Router WAR Project with Web Console and REST Support
-==========================================================
+## Portal Backend - Training Server
 
-This project bundles the Camel Web Console, REST API, and some sample routes. You can either:
+This project bundles the Camel Web Console, REST API, and some sample routes.
+
+###Camel Router WAR Project with Web Console and REST Support
+
+You can either:
 
 * build the WAR by running
 
@@ -22,8 +25,7 @@ This project bundles the Camel Web Console, REST API, and some sample routes. Yo
   to start up and deploy to Jetty.
 
 
-Web Console
-===========
+###Web Console
 
 You can view the Web Console by pointing your browser to http://localhost:9999/
 
