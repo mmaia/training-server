@@ -8,7 +8,7 @@ This project bundles the Camel Web Console, REST API, and some sample routes. Yo
 * build the WAR by running
 
   ```
-  mvn install
+  mvn package
   ```
 
   and then run the project by dropping the WAR into your favorite web container, or
