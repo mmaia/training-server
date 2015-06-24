@@ -7,15 +7,15 @@ This project bundles the Camel Web Console, REST API, and some sample routes. Yo
 
 1. build the WAR by running
 
-    mvn install
+      mvn install
 
   You can then run the project by dropping the WAR into your favorite web container.
 
 2. Alternatively, just run
 
-    mvn jetty:run
+      mvn jetty:run
 
-to start up and deploy to Jetty.
+  to start up and deploy to Jetty.
 
 
 Web Console
