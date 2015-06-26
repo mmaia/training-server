@@ -6,24 +6,21 @@ This project bundles the Camel Web Console, REST API, and some sample routes.
 
 ###Camel Router WAR Project with Web Console and REST Support
 
-You can either:
+Just run
 
-* build the WAR by running
+```
+mvn jetty:run
+```
 
-  ```
-  mvn package
-  ```
+to start up and deploy to Jetty.
 
-  and then run the project by dropping the WAR into your favorite web container, or
+Alternatively, you can build the WAR by running
 
-* just run
+```
+mvn package
+```
 
-  ```
-  mvn jetty:run
-  ```
-
-  to start up and deploy to Jetty.
-
+and then run the project by dropping the WAR into your favorite web container.
 
 ###Web Console
 
