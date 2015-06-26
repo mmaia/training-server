@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:amq="http://activemq.apache.org/schema/core" xmlns:camel="http://camel.apache.org/schema/spring"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+
+       http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+    <amq:broker persistent="false">
+        <!--
+            The maximum about of space the broker will use before slowing down
+            producers
+        -->
+        <amq:systemUsage>
+            <amq:systemUsage>
+                <amq:memoryUsage>
+                    <amq:memoryUsage limit="20 mb"/>
+                </amq:memoryUsage>
+                <amq:storeUsage>
+                    <amq:storeUsage limit="1 gb" name="foo"/>
+                </amq:storeUsage>
+                <amq:tempUsage>
+                    <amq:tempUsage limit="100 mb"/>
+                </amq:tempUsage>
+            </amq:systemUsage>
+        </amq:systemUsage>
+
+        <!-- The transport connectors ActiveMQ will listen to -->
+        <amq:transportConnectors>
+            <amq:transportConnector name="openwire"
+                                    uri="tcp://0.0.0.0:61616"/>
+            <amq:transportConnector name="stomp"
+                                    uri="stomp://0.0.0.0:61613"/>
+        </amq:transportConnectors>
+    </amq:broker>
+
+    <!--
+        configure the camel activemq component to use the current broker
+    -->
+    <!-- create the activemq component so that we can use the activemq uri -->
+    <bean id="activemq" class="org.apache.activemq.camel.component.ActiveMQComponent"
+          p:brokerURL="vm://localhost?create=false&amp;waitForStart=10000">
+            </bean>
+
+    <!--z
+        Here is a sample which processes the input files (leaving them in
+        place - see the 'noop' flag), and sends them on a JMS queue. This
+        queue is watched by another route which then performs content based
+        routing on the messages using XPath.
+    -->
+    <camel:camelContext xmlns="http://camel.apache.org/schema/spring" id="training-server">
+        <route id="training.server.player.created">
+            <from uri="seda://player/created"/>
+            <marshal>
+                <json library="Jackson"/>
+            </marshal>
+            <log message="Player Created: ${body}"/>
+            <to uri="activemq:topic:Player.Created"/>
+        </route>
+
+        <route id="training.server.player.logged.in">
+            <from uri="seda://player/loggedIn"/>
+            <marshal>
+                <json library="Jackson"/>
+            </marshal>
+            <log message="Player Logged In: ${body}"/>
+            <to uri="activemq:topic:Player.LoggedIn"/>
+        </route>
+
+        <route id="training.server.player.highscore.updated">
+            <from uri="seda://player/highScoreUpdated"/>
+            <marshal>
+                <json library="Jackson"/>
+            </marshal>
+            <log message="Player Highscore Updated: ${body}"/>
+            <to uri="activemq:topic:Player.HighScoreUpdated"/>
+        </route>
+
+        <route id="training.server.player.logged.out">
+            <from uri="seda://player/loggedOut"/>
+            <marshal>
+                <json library="Jackson"/>
+            </marshal>
+            <log message="Player Logged Out: ${body}"/>
+            <to uri="activemq:topic.Player.LoggedOut"/>
+        </route>
+
+        <route id="training.server.game.session.created">
+            <from uri="seda://gamesession/created"/>
+            <marshal>
+                <json library="Jackson"/>
+            </marshal>
+            <log message="Game Session Created: ${body}"/>
+            <to uri="activemq:topic:GameSession.Created"/>
+        </route>
+
+        <route id="training.server.game.session.updated">
+            <from uri="seda://gamesession/updated"/>
+            <marshal>
+                <json library="Jackson"/>
+            </marshal>
+            <log message="Game Session Updated: ${body}"/>
+            <to uri="activemq:topic:GameSession.Updated"/>
+
+        </route>
+
+        <route id="training.server.game.session.update">
+            <from uri="activemq:queue:UpdateGameSession"/>
+            <log message="Incoming message: ${body}"/>
+            <unmarshal>
+                <json library="Jackson" unmarshalTypeName="com.backbase.expert.training.dto.game.twothousandfortyeight.GameStateTO"/>
+            </unmarshal>
+            <bean ref="gameManagerService" method="updateGameState(${body})"/>
+            <marshal>
+                <json library="Jackson"/>
+            </marshal>
+        </route>
+
+        <route id="training.server.player.highscore.update">
+            <from uri="activemq:queue:UpdatePlayerHighScore"/>
+            <log message="Incoming message: ${body}"/>
+            <convertBodyTo type="Long"/>
+            <bean ref="playerManagementService" method="setBestScore(${header.username}, ${body})"/>
+            <marshal>
+                <json library="Jackson"/>
+            </marshal>
+        </route>
+
+    </camel:camelContext>
+
+    <import resource="classpath:/META-INF/spring/training-server-context.xml"/>
+</beans>
