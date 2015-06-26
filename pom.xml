@@ -14,7 +14,7 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.backbase.expert.training</groupId>
+  <groupId>com.backbase.training</groupId>
   <artifactId>training-server</artifactId>
   <version>1.0-SNAPSHOT</version>
 
