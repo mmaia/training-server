@@ -6,6 +6,8 @@ This project bundles the Camel Web Console, REST API, and some sample routes.
 
 ###Camel Router WAR Project with Web Console and REST Support
 
+Navigate to the jetty folder in the project you just cloned and then:
+
 Just run
 
 ```
